@@ -1,6 +1,7 @@
 package net.anumbrella.zhishan.utils;
 
 import android.os.Environment;
+import android.util.Log;
 
 import net.anumbrella.zhishan.app.App;
 import net.anumbrella.zhishan.bean.ClassModelBean;
@@ -923,9 +924,11 @@ public class ThreadHundle {
             return false;
         }
 
+
         //拼接cookie
         DWRSESSIONID = SubString(text, "r.handleCallback(\"0\",\"0\",\"", "\");");
-        httpInfo.Cookie = "DWRSESSIONID=" + DWRSESSIONID + ";" + httpInfo.Cookie;
+        httpInfo.Cookie = "DWRSESSIONID=" + DWRSESSIONID + ";" + httpInfo.Cookie + ";rand=" + GetRandStr(1000, 9999);
+
 
         /**
          * 开始登陆
@@ -933,9 +936,12 @@ public class ThreadHundle {
         httpInfo.url = getString(103);
         httpInfo.Header = getString(105);
         httpInfo.PostData = getString(104) + GetScriptSessionId();
+        String rand = GetRandStr(1000, 9999);
         httpInfo.PostData = httpInfo.PostData.replace("Username", userName);
         httpInfo.PostData = httpInfo.PostData.replace("Password", passWord);
-        httpInfo.Cookie = httpInfo.Cookie + ";rand=" + GetRandStr(1000, 9999);
+        httpInfo.PostData = httpInfo.PostData.replace("Rand", rand);
+        httpInfo.Cookie = httpInfo.Cookie + ";rand=" + rand;
+
 
         String str = httpUtils.Post(httpInfo);
         if (str.equals("wrong")) {
@@ -1121,7 +1127,7 @@ public class ThreadHundle {
             case 103:
                 return "http://www.attop.com/js/ajax/call/plaincall/zsClass.coreAjax.dwr";
             case 104:
-                return "callCount=1\nwindowName=\nc0-scriptName=zsClass\nc0-methodName=coreAjax\nc0-id=0\nc0-param0=string:login\nc0-e1=string:Username\nc0-e2=string:Password\nc0-e3=string:\nc0-e4=number:2\nc0-param1=Object_Object:{username:reference:c0-e1, password:reference:c0-e2, rand:reference:c0-e3, autoflag:reference:c0-e4}\nc0-param2=string:doLogin\nbatchId=1\ninstanceId=0\npage=%2Flogin_pop.htm\nscriptSessionId=";
+                return "callCount=1\nwindowName=\nc0-scriptName=zsClass\nc0-methodName=coreAjax\nc0-id=0\nc0-param0=string:login\nc0-e1=string:Username\nc0-e2=string:Password\nc0-e3=string:Rand\nc0-e4=number:2\nc0-param1=Object_Object:{username:reference:c0-e1, password:reference:c0-e2, rand:reference:c0-e3, autoflag:reference:c0-e4}\nc0-param2=string:doLogin\nbatchId=1\ninstanceId=0\npage=%2Flogin_pop.htm\nscriptSessionId=";
             case 105:
                 return "Referer: http@//www.attop.com/login_pop.htm";
             case 106:
